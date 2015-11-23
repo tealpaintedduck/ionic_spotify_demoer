@@ -18,7 +18,8 @@ angular.module('songhop.services', [])
   return o
 })
 
-.factory('Recommendations', function($http, SERVER) {
+.factory('Recommendations', function($http, SERVER, $q) {
+  var media;
   var o = {
     queue: []
   };
@@ -34,9 +35,31 @@ angular.module('songhop.services', [])
   o.nextSong = function() {
     console.log(o.queue);
     o.queue.shift();
+    o.haltAudio();
     if (o.queue.length < 4) {
       o.getNextSongs();
     }
   }
+  o.playCurrentSong = function() {
+    var defer = $q.defer();
+
+    media = new Audio(o.queue[0].preview_url);
+    media.addEventListener("loadeddata", function() {
+        defer.resolve();
+    });
+    media.play();
+    return defer.promise;
+  }
+  o.haltAudio = function() {
+    if (media) media.pause();
+  }
+  o.init = function() {
+    if (o.queue.length === 0) {
+      return o.getNextSongs();
+    } else {
+      return o.playCurrentSong();
+    }
+  }
+
   return o;
 })
