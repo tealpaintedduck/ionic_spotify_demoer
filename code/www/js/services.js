@@ -10,5 +10,10 @@ angular.module('songhop.services', [])
     o.favorites.unshift(song);
   }
 
+  o.removeSongFromFavorites = function(song, index) {
+    if(!song) return false;
+    o.favorites.splice(index, 1)
+  }
+
   return o
 });

@@ -6,6 +6,9 @@
         <img ng-src="{{ song.image_small }}">
         <h2>{{ song.title }}</h2>
         <p>{{ song.artist }}</p>
+        <ion-option-button class="button-assertive visible" ng-click="removeSong(song, $index)">
+          <i class="icon ion-minus-circled"></i>
+        </ion-option-button>
       </ion-item>
     </ion-list>
 
