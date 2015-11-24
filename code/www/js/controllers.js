@@ -35,10 +35,14 @@ Controller for the discover page
 /*
 Controller for the favorites page
 */
-.controller('FavoritesCtrl', function($scope, User) {
+.controller('FavoritesCtrl', function($scope, User, $window) {
   $scope.favorites = User.favorites;
+  $scope.username = User.username;
   $scope.removeSong = function(song,index) {
     User.removeSongFromFavorites(song, index);
+  }
+  $scope.openSong = function(song) {
+    $window.open(song.open_url, "_system");
   }
 })
 
@@ -46,7 +50,7 @@ Controller for the favorites page
 /*
 Controller for our tab bar
 */
-.controller('TabsCtrl', function($scope, Recommendations, User) {
+.controller('TabsCtrl', function($scope, $window, Recommendations, User) {
   $scope.favCount = User.favoriteCount;
   $scope.enteringFavorites = function() {
     User.newFavorites = 0;
@@ -54,5 +58,19 @@ Controller for our tab bar
   }
   $scope.leavingFavorites = function() {
     Recommendations.init();
+  }
+  $scope.logout = function() {
+    User.destroySession();
+    $window.location.href = 'index.html';
+  }
+})
+
+.controller('SplashCtrl', function($scope, $state, User) {
+  $scope.submitForm = function(username, signingUp) {
+    User.auth(username, signingUp).then(function(){
+      $state.go('tab.discover');
+    }, function() {
+      alert('Hmmm... try another username.')
+    })
   }
 });
